@@ -2,6 +2,17 @@ name: Build
 
 on: [push, pull_request]
 
+env:
+  DATABASE_URL: https://fake.com
+  NEXTAUTH_SECRET: secret
+  NEXTAUTH_URL: https://fake.com
+  CLOUDINARY_URL: https://fake.com
+  GITHUB_CLIENT_ID: secret
+  GITHUB_CLIENT_SECRET: secret
+  EMAIL_FROM: secret@email.com
+  EMAIL_SERVER: https://fake.com
+  NEXT_PUBLIC_PEXELS_API_KEY: secret
+
 jobs:
   build:
     runs-on: ubuntu-latest
