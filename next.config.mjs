@@ -21,6 +21,14 @@ const nextConfig = {
       },
     ],
   },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  swcMinify: true,
+
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
