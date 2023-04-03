@@ -1,6 +1,5 @@
 import * as React from 'react'
 import Link from 'next/link'
-import { signOut } from 'next-auth/react'
 import { CiSearch } from 'react-icons/ci'
 
 import { useAuth } from '@/modules/user/hooks/useAuth'
@@ -9,6 +8,7 @@ import MobileLogo from '@/public/logo-small.svg'
 import Logo from '@/public/logo.svg'
 import { Button } from '../Button'
 import { Input } from '../Input'
+import { ProfileDropdown } from './ProfileDropdown'
 
 export function Header() {
   const isAuthed = useAuth()
@@ -39,7 +39,7 @@ export function Header() {
             Sign in
           </Link>
         ) : (
-          <Button onClick={() => signOut()}>Log out</Button>
+          <ProfileDropdown />
         )}
       </div>
     </header>
