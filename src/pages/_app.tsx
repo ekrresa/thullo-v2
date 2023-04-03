@@ -3,7 +3,9 @@ import { Inter as FontSans } from 'next/font/google'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { type Session } from 'next-auth'
 import { SessionProvider } from 'next-auth/react'
+import { Toaster } from 'react-hot-toast'
 
+import { ProfileProvider } from '@/modules/user/providers/profile'
 import { api } from '@/utils/api'
 import { type PageWithLayout } from '@/utils/app'
 import '@/styles/globals.css'
@@ -34,10 +36,13 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
             }
           `}</style>
 
-          <Component {...otherPageProps} />
+          <ProfileProvider>
+            <Component {...otherPageProps} />
+          </ProfileProvider>
         </>
       )}
 
+      <Toaster toastOptions={{ duration: 3000 }} />
       <ReactQueryDevtools initialIsOpen={false} />
     </SessionProvider>
   )

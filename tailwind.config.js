@@ -19,6 +19,18 @@ module.exports = {
           800: '#1e51af',
           900: '#1e468a',
         },
+        roman: {
+          50: '#fdf3f3',
+          100: '#fbe8e8',
+          200: '#f7d4d5',
+          300: '#f1b0b3',
+          400: '#e8848b',
+          500: '#db5461',
+          600: '#c7374c',
+          700: '#a7293f',
+          800: '#8c2539',
+          900: '#782337',
+        },
       },
       fontFamily: {
         sans: ['var(--font-inter)', ...fontFamily.sans],
@@ -29,5 +41,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require('@tailwindcss/typography')],
+  plugins: [require('@tailwindcss/typography'), require('@tailwindcss/forms')],
 }
