@@ -1,5 +1,7 @@
 import Head from 'next/head'
 
+import { Layout } from '@/components/Layout'
+
 export default function Home() {
   return (
     <>
@@ -13,3 +15,5 @@ export default function Home() {
     </>
   )
 }
+
+Home.getLayout = (page: React.ReactNode) => <Layout>{page}</Layout>
