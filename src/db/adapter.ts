@@ -12,11 +12,11 @@ export default function MyAdapter(client: typeof db): Adapter {
       const userId = createId()
       await client.insert(users).values({ ...user, id: userId })
 
-      return await client
-        .select()
-        .from(users)
-        .where(eq(users.id, userId))
-        .then(res => res[0] ?? null)
+      const rows = await client.select().from(users).where(eq(users.id, userId))
+      const newUser = rows[0]
+      if (!newUser) throw new Error('User not found')
+
+      return newUser
     },
     async getUser(id) {
       const rows = await client.select().from(users).where(eq(users.id, id))
@@ -41,20 +41,19 @@ export default function MyAdapter(client: typeof db): Adapter {
         )
         .then(res => res[0])
 
-      return account.users ?? null
+      return account?.users ?? null
     },
     async updateUser(user) {
-      if (!user.id) {
-        throw new Error('User not found')
-      }
+      if (!user.id) throw new Error('User not found')
 
       await client.update(users).set(user).where(eq(users.id, user.id))
 
-      return await client
-        .select()
-        .from(users)
-        .where(eq(users.id, user.id))
-        .then(res => res[0] ?? null)
+      const rows = await client.select().from(users).where(eq(users.id, user.id))
+
+      const row = rows[0]
+      if (!row) throw new Error('User not found')
+
+      return row
     },
     async deleteUser(userId) {
       await client.delete(accounts).where(eq(accounts.userId, userId))
@@ -85,11 +84,15 @@ export default function MyAdapter(client: typeof db): Adapter {
         .insert(sessions)
         .values({ id: sessionId, sessionToken, userId, expires })
 
-      return await client
+      const rows = await client
         .select()
         .from(sessions)
         .where(eq(sessions.sessionToken, sessionToken))
-        .then(res => res[0])
+
+      const row = rows[0]
+      if (!row) throw new Error('User not found')
+
+      return row
     },
     async getSessionAndUser(sessionToken) {
       return await client
@@ -151,7 +154,7 @@ export default function MyAdapter(client: typeof db): Adapter {
           )
         )
 
-      return rows[0]
+      return rows[0] ?? null
     },
   }
 }
