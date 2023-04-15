@@ -14,7 +14,7 @@ import { Input } from '@/components/Input'
 import { Layout } from '@/components/Layout'
 import { Spinner } from '@/components/Spinner'
 import { ROUTES } from '@/lib/constants'
-import { api } from '@/utils/api'
+import { api } from '@/server/api'
 
 export default function Profile() {
   const userProfile = useProfileStore(state => state.info)

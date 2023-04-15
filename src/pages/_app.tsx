@@ -6,7 +6,7 @@ import { SessionProvider } from 'next-auth/react'
 import { Toaster } from 'react-hot-toast'
 
 import { ProfileProvider } from '@/modules/user/providers/profile'
-import { api } from '@/utils/api'
+import { api } from '@/server/api'
 import { type PageWithLayout } from '@/utils/app'
 import '@/styles/globals.css'
 
