@@ -1,10 +1,10 @@
-import { users } from '@/db/schema'
 import { faker } from '@faker-js/faker'
 import { createId } from '@paralleldrive/cuid2'
 import { v2 as cloudinary } from 'cloudinary'
 import { eq } from 'drizzle-orm/expressions'
 
 import { UserProfileInputSchema, UserSchema } from '@/modules/user/model'
+import { users } from '@/db/schema'
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc'
 
 export const userRouter = createTRPCRouter({
@@ -27,11 +27,12 @@ export const userRouter = createTRPCRouter({
   getUserProfile: protectedProcedure.output(UserSchema).query(async ({ ctx }) => {
     const userId = ctx.session.user.id
 
-    return await ctx.db
-      .select()
-      .from(users)
-      .where(eq(users.id, userId))
-      .then(users => users[0])
+    const rows = await ctx.db.select().from(users).where(eq(users.id, userId))
+    const result = rows[0]
+
+    if (!result) throw new Error('Unable to fetch user profile')
+
+    return result
   }),
   updateUserProfile: protectedProcedure
     .input(UserProfileInputSchema)
@@ -54,10 +55,11 @@ export const userRouter = createTRPCRouter({
 
       await ctx.db.update(users).set(input).where(eq(users.id, userId))
 
-      return await ctx.db
-        .select()
-        .from(users)
-        .where(eq(users.id, userId))
-        .then(res => res[0] ?? null)
+      const rows = await ctx.db.select().from(users).where(eq(users.id, userId))
+      const result = rows[0]
+
+      if (!result) throw new Error('User not found')
+
+      return result
     }),
 })
