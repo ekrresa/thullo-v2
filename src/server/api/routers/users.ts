@@ -1,23 +1,37 @@
+import { users } from '@/db/schema'
 import { faker } from '@faker-js/faker'
+import { createId } from '@paralleldrive/cuid2'
 import { v2 as cloudinary } from 'cloudinary'
+import { eq } from 'drizzle-orm/expressions'
 
 import { UserProfileInputSchema, UserSchema } from '@/modules/user/model'
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc'
 
 export const userRouter = createTRPCRouter({
   createGuestUser: publicProcedure.mutation(async ({ ctx }) => {
-    return await ctx.prisma.user.create({
-      data: {
-        email: faker.internet.email().toLocaleLowerCase(),
-        isGuest: true,
-        emailVerified: new Date(),
-      },
+    const newUserId = createId()
+
+    await ctx.db.insert(users).values({
+      id: newUserId,
+      email: faker.internet.email().toLocaleLowerCase(),
+      userType: 'guest',
+      emailVerified: new Date(),
     })
+
+    return await ctx.db
+      .select()
+      .from(users)
+      .where(eq(users.id, newUserId))
+      .then(res => res[0] ?? null)
   }),
   getUserProfile: protectedProcedure.output(UserSchema).query(async ({ ctx }) => {
     const userId = ctx.session.user.id
 
-    return await ctx.prisma.user.findUniqueOrThrow({ where: { id: userId } })
+    return await ctx.db
+      .select()
+      .from(users)
+      .where(eq(users.id, userId))
+      .then(users => users[0])
   }),
   updateUserProfile: protectedProcedure
     .input(UserProfileInputSchema)
@@ -38,6 +52,12 @@ export const userRouter = createTRPCRouter({
         input.image = uploadResponse.secure_url
       }
 
-      return await ctx.prisma.user.update({ data: input, where: { id: userId } })
+      await ctx.db.update(users).set(input).where(eq(users.id, userId))
+
+      return await ctx.db
+        .select()
+        .from(users)
+        .where(eq(users.id, userId))
+        .then(res => res[0] ?? null)
     }),
 })

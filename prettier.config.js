@@ -14,6 +14,8 @@ module.exports = {
     '^@/components/(.*)$',
     '^@/lib/(.*)$',
     '^@/server/(.*)$',
+    '^@/db$',
+    '^@/db/(.*)$',
     '^@/utils/(.*)$',
     '^@/env(.*)$',
     '^@/public/(.*)$',

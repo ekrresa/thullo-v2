@@ -22,6 +22,7 @@
  * ZodErrors so that you get type-safety on the frontend if your procedure fails due to validation
  * errors on the backend.
  */
+
 import { TRPCError, initTRPC } from '@trpc/server'
 import { type CreateNextContextOptions } from '@trpc/server/adapters/next'
 import { type Session } from 'next-auth'
@@ -29,7 +30,7 @@ import superjson from 'superjson'
 import { ZodError } from 'zod'
 
 import { getServerAuthSession } from '@/server/auth'
-import { prisma } from '@/server/db'
+import { db } from '@/db'
 
 type CreateContextOptions = {
   session: Session | null
@@ -48,7 +49,7 @@ type CreateContextOptions = {
 const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     session: opts.session,
-    prisma,
+    db,
   }
 }
 
