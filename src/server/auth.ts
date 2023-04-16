@@ -1,5 +1,4 @@
 import { type GetServerSidePropsContext } from 'next'
-import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { TRPCError } from '@trpc/server'
 import { getServerSession, type DefaultSession, type NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
@@ -7,7 +6,8 @@ import EmailProvider from 'next-auth/providers/email'
 import GitHubProvider from 'next-auth/providers/github'
 
 import { userRouter } from '@/server/api/routers/users'
-import { prisma } from '@/server/db'
+import { db } from '@/db'
+import MyAdapter from '@/db/adapter'
 import { env } from '@/env.mjs'
 
 /**
@@ -25,7 +25,7 @@ declare module 'next-auth' {
 }
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter: MyAdapter(db),
   pages: { signIn: '/auth' },
   session: {
     strategy: 'jwt',
@@ -44,7 +44,7 @@ export const authOptions: NextAuthOptions = {
       type: 'credentials',
       credentials: {},
       async authorize() {
-        const caller = userRouter.createCaller({ prisma, session: null })
+        const caller = userRouter.createCaller({ db, session: null })
 
         try {
           const user = await caller.createGuestUser()

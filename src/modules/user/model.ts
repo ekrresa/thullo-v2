@@ -1,14 +1,16 @@
+import { type UserModel } from '@/db/models'
 import { z } from 'zod'
 
-export const UserSchema = z.object({
+export const UserSchema: z.ZodType<UserModel> = z.object({
   id: z.string(),
   name: z.string().nullable(),
   email: z.string(),
   emailVerified: z.date().nullable(),
   username: z.string().nullable(),
   image: z.string().nullable(),
-  isGuest: z.boolean(),
+  userType: z.enum(['guest', 'user']),
   createdAt: z.date(),
+  updatedAt: z.date(),
 })
 
 export type User = z.infer<typeof UserSchema>
