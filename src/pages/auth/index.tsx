@@ -5,6 +5,7 @@ import { signIn } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
 import { FaGithub } from 'react-icons/fa'
+import { IoPersonCircleOutline } from 'react-icons/io5'
 import { z } from 'zod'
 
 import { useGuestUserSignup } from '@/modules/user/hooks/useGuestUserSignup'
@@ -73,9 +74,11 @@ export default function AuthPage() {
             label="Email"
             id="email"
             errorMessage={errors.email?.message}
+            autoComplete="email"
+            type="email"
           />
           <Button loading={isSubmitting} variant="primary" type="submit" fullWidth>
-            Sign in with Email
+            Sign in
           </Button>
         </form>
 
@@ -102,7 +105,8 @@ export default function AuthPage() {
           variant="secondary"
           fullWidth
         >
-          Sign in as a guest
+          <IoPersonCircleOutline className="text-2xl" />
+          <p>Sign in as a guest</p>
         </Button>
       </section>
     </div>
